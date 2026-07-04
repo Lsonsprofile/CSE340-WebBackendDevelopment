@@ -1,0 +1,29 @@
+{
+  "name": "cse340-webbackenddevelopment",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Project is centered on Server-Side Fundamentals and web development \r My setup checklist includes Node.js, npm, Git, and my editor (VS Code or WebStorm). I also need Microsoft Teams for group communication. I’ll make sure I can open a terminal inside my editor and know exactly where my project folder lives. My .gitignore must include node_modules/ and .env so I don’t accidentally push sensitive or unnecessary files to GitHub.",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon",
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lsonsprofile/CSE340-WebBackendDevelopment.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Lsonsprofile/CSE340-WebBackendDevelopment/issues"
+  },
+  "homepage": "https://github.com/Lsonsprofile/CSE340-WebBackendDevelopment#readme",
+  "dependencies": {
+    "ejs": "^6.0.1",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
