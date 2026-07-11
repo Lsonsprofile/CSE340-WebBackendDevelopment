@@ -1,3 +1,4 @@
+import { getAllCategories } from './src/models/categories.js';
 import { getAllProjects } from './src/models/projects.js';
 import { getAllOrganizations } from './src/models/organizations.js';
 import { testConnection } from './src/models/db.js';
@@ -65,9 +66,10 @@ app.get('/projects', async(req, res) => {
 });
 
 // Categories page route
-app.get('/categories', (req, res) => {
+app.get('/categories', async(req, res) => {
+    const categories = await getAllCategories(); // declare first                     // then log it
     const title = 'Categories'; 
-    res.render('categories', { title });
+    res.render('categories', { title, categories });
 });
 
 // Start the server and listen for incoming requests
