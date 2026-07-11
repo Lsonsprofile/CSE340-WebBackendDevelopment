@@ -1,3 +1,6 @@
+import { getAllProjects } from './src/models/projects.js';
+import { getAllOrganizations } from './src/models/organizations.js';
+import { testConnection } from './src/models/db.js';
 // Import the Express framework
 import express from 'express';
 
@@ -36,15 +39,29 @@ app.get('/', (req, res) => {
 });
 
 // Organizations page route
-app.get('/organizations', (req, res) => {
-    const title = 'Our Partner Organizations'; 
-    res.render('organizations', { title });
+// Define a GET route for the '/organizations' URL path
+app.get('/organizations', async (req, res) => {
+  
+  // Call the database function to get all organizations
+  // 'await' pauses execution until the data is retrieved
+  const organizations = await getAllOrganizations();
+
+  // Set the page title to be passed to the template
+  const title = 'Our Partner Organizations';
+
+  // Render the 'organizations.ejs' template
+  // Pass the title and organizations data to the template
+  res.render('organizations', {
+    title,
+    organizations
+  });
 });
 
 // Projects page route
-app.get('/projects', (req, res) => {
-    const title = 'Service Projects'; 
-    res.render('projects', { title });
+app.get('/projects', async(req, res) => {
+    const projects = await getAllProjects();   // declare first                       // then log it
+    const title = 'Projects';
+    res.render('projects', { title, projects });
 });
 
 // Categories page route
@@ -54,7 +71,12 @@ app.get('/categories', (req, res) => {
 });
 
 // Start the server and listen for incoming requests
-app.listen(PORT, () => {
-    console.log(`Server running at http://127.0.0.1:${PORT}`);
+app.listen(PORT, async () => {
+  try {
+    await testConnection();
+    console.log(`Server is running at http://127.0.0.1:${PORT}`);
     console.log(`Environment: ${NODE_ENV}`);
+  } catch (error) {
+    console.error('Error connecting to the database:', error);
+  }
 });
