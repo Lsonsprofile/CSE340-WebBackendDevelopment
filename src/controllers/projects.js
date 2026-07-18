@@ -4,10 +4,9 @@ import {
     getProjectDetails
 } from '../models/projects.js';
 
-// Import category model function
 import {
     getCategoriesByProjectId
-} from '../models/categories.js';
+} from "../models/categories.js";
 
 // Number of projects to display
 const NUMBER_OF_UPCOMING_PROJECTS = 5;
