@@ -230,7 +230,7 @@ footer {
 
     .category-item {
         background: linear-gradient(135deg, var(--category-bg-start), var(--category-bg-end));
-        color: var(--category-text);
+        color: var(--bg-color);
 
         padding: .85rem 1.8rem;
         border-radius: 50px;
