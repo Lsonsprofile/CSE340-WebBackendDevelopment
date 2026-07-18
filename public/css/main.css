@@ -162,7 +162,6 @@ main li {
 }
 
 main li:hover {
-    background: var(--card-hover-bg);
     border-color: var(--card-hover-border);
     box-shadow: var(--shadow-heavy);
     transform: translateY(-2px);
