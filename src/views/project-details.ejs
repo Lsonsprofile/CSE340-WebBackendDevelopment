@@ -1,0 +1,36 @@
+<%- include('partials/header') %>
+
+<main>
+
+    <h1><%= title %></h1>
+
+    <article class="project-details">
+
+        <h2><%= project.title %></h2>
+
+        <p>
+            <strong>Description:</strong><br>
+            <%= project.description %>
+        </p>
+
+        <p>
+            <strong>Organization:</strong>
+            <%= project.organization_name %>
+        </p>
+
+        <p>
+            <strong>Contact Email:</strong>
+            <a href="mailto:<%= project.contact_email %>">
+                <%= project.contact_email %>
+            </a>
+        </p>
+
+    </article>
+
+    <p>
+        <a href="/projects">← Back to Projects</a>
+    </p>
+
+</main>
+
+<%- include('partials/footer') %>

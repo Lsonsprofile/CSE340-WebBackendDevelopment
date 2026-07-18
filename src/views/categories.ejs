@@ -1,34 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- include('partials/header') %>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <%= title %>
-    </title>
-    <link rel="stylesheet" href="/css/main.css">
-</head>
+<main>
 
-<body>
-    <%- include('partials/header') %>
+    <h1><%= title %></h1>
 
-        <main>
-            <h1><%= title %></h1>
+    <p>Browse the service project categories available in our community.</p>
 
-            <p>Browse the service project categories available in our community.</p>
+    <% if (categories.length > 0) { %>
 
-            <ul class="category-list">
-                <% categories.forEach(category=> { %>
-                    <li class="category-item">
+        <ul class="category-list">
+
+            <% categories.forEach(category => { %>
+
+                <li class="category-item">
+                    <a href="/categories/<%= category.category_id %>">
                         <%= category.category_name %>
-                    </li>
-                    <% }) %>
-            </ul>
-        </main>
+                    </a>
+                </li>
 
+            <% }) %>
 
-        <%- include('partials/footer') %>
-</body>
+        </ul>
 
-</html>
+    <% } else { %>
+
+        <p>No service categories are currently available.</p>
+
+    <% } %>
+
+</main>
+
+<%- include('partials/footer') %>

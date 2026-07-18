@@ -1,0 +1,55 @@
+<%- include('partials/header') %>
+
+<main>
+
+    <h1><%= title %></h1>
+
+    <p>
+        Explore the service projects in the
+        <strong><%= category.category_name %></strong> category.
+    </p>
+
+    <% if (projects.length > 0) { %>
+
+        <ul class="project-list">
+
+            <% projects.forEach(project => { %>
+
+                <li class="project-item">
+
+                    <h2>
+                        <a href="/project/<%= project.project_id %>">
+                            <%= project.title %>
+                        </a>
+                    </h2>
+
+                    <p>
+                        <%= project.description %>
+                    </p>
+
+                    <p>
+                        <strong>Organization:</strong>
+                        <%= project.organization_name %>
+                    </p>
+
+                </li>
+
+            <% }) %>
+
+        </ul>
+
+    <% } else { %>
+
+        <p>
+            There are currently no projects in this category.
+        </p>
+
+    <% } %>
+
+    <p>
+        <a href="/categories">← Back to Categories</a>
+    </p>
+
+</main>
+
+<%- include('partials/footer') %>

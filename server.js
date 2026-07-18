@@ -1,4 +1,7 @@
+// Import a function to test the database connection
 import { testConnection } from './src/models/db.js';
+
+// Import the router you defined in routes.js
 import router from './src/routes.js';
 
 // Import the Express framework
@@ -20,10 +23,10 @@ const __filename = fileURLToPath(import.meta.url);
 // Get the folder path of this file
 const __dirname = path.dirname(__filename);
 
-// Create an Express application
+// Create an Express application instance
 const app = express();
 
-// Serve static files from the "public" folder
+// Serve static files (CSS, JS, images) from the "public" folder
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Set EJS as the template engine
@@ -32,7 +35,7 @@ app.set('view engine', 'ejs');
 // Set the folder where EJS templates are stored
 app.set('views', path.join(__dirname, 'src/views'));
 
-// Log every request (only in development)
+// Middleware: log every request (only in development mode)
 app.use((req, res, next) => {
     if (NODE_ENV === 'development') {
         console.log(`${req.method} ${req.url}`);
@@ -40,22 +43,23 @@ app.use((req, res, next) => {
     next();
 });
 
-// Make NODE_ENV available to all EJS templates
+// Middleware: make NODE_ENV available to all EJS templates
 app.use((req, res, next) => {
     res.locals.NODE_ENV = NODE_ENV;
     next();
 });
 
+// Mount the router so all routes defined in routes.js are active
 app.use(router);
 
-// Catch-all for 404 Not Found
+// Catch-all middleware for 404 Not Found errors
 app.use((req, res, next) => {
     const err = new Error('Page Not Found');
     err.status = 404;
     next(err);
 });
 
-// Global error handler (MUST be last)
+// Global error handler (must be last)
 app.use((err, req, res, next) => {
     console.error('Error occurred:', err.message);
     console.error('Stack trace:', err.stack);
@@ -72,8 +76,7 @@ app.use((err, req, res, next) => {
     res.status(status).render(`errors/${template}`, context);
 });
 
-
-// Start the server
+// Start the server and test the database connection
 app.listen(PORT, async () => {
   try {
     await testConnection(); // test database connection
