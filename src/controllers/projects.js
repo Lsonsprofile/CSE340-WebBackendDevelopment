@@ -4,63 +4,87 @@ import {
     getProjectDetails
 } from '../models/projects.js';
 
-
 // Import category model function
 import {
     getCategoriesByProjectId
 } from '../models/categories.js';
 
-
+// Number of projects to display
 const NUMBER_OF_UPCOMING_PROJECTS = 5;
 
 
 // Display all upcoming projects
-const showProjectsPage = async (req, res) => {
+const showProjectsPage = async (req, res, next) => {
 
-    // Get projects from database
-    const projects = await getUpcomingProjects(NUMBER_OF_UPCOMING_PROJECTS);
+    try {
 
-    const title = 'Upcoming Service Projects';
+        // Get projects from the database
+        const projects = await getUpcomingProjects(NUMBER_OF_UPCOMING_PROJECTS);
 
+        // Set the page title
+        const title = "Upcoming Service Projects";
 
-    // Send data to EJS
-    res.render('projects', {
-        title,
-        projects
-    });
+        // Render the projects page
+        res.render("projects", {
+            title,
+            projects
+        });
+
+    } catch (err) {
+
+        // Pass the error to Express error handler
+        next(err);
+    }
 };
-
 
 
 // Display one project details page
-const showProjectDetailsPage = async (req, res) => {
+const showProjectDetailsPage = async (req, res, next) => {
 
-    // Get project id from URL
-    const { id } = req.params;
+    try {
 
+        // Get the project ID from the URL
+        const { id } = req.params;
 
-    // Get project information
-    const project = await getProjectDetails(id);
+        // Check that the ID is a positive integer
+        if (!Number.isInteger(Number(id)) || Number(id) <= 0) {
+            const err = new Error("Invalid project ID");
+            err.status = 400;
+            return next(err);
+        }
 
+        // Get the project from the database
+        const project = await getProjectDetails(id);
 
-    // Get categories connected to this project
-    const categories = await getCategoriesByProjectId(id);
+        // Check whether the project exists
+        if (!project) {
+            const err = new Error("Project not found");
+            err.status = 404;
+            return next(err);
+        }
 
+        // Get all categories for this project
+        const categories = await getCategoriesByProjectId(id);
 
-    // Page title
-    const title = project.title;
+        // Set the page title
+        const title = project.title;
 
+        // Render the project details page
+        res.render("project-details", {
+            title,
+            project,
+            categories
+        });
 
-    // Send data to EJS
-    res.render('project-details', {
-        title,
-        project,
-        categories
-    });
+    } catch (err) {
+
+        // Pass the error to Express error handler
+        next(err);
+    }
 };
 
 
-// Export controllers
+// Export controller functions
 export {
     showProjectsPage,
     showProjectDetailsPage

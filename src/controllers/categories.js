@@ -7,58 +7,72 @@ import {
 
 
 // Display all categories
-const showCategoriesPage = async (req, res) => {
+const showCategoriesPage = async (req, res, next) => {
 
     try {
 
-        // Get categories from the database
+        // Get all categories from the database
         const categories = await getAllCategories();
 
+        // Set the page title
         const title = "Service Categories";
 
-        // Render categories page
-        res.render('categories', {
+        // Render the categories page
+        res.render("categories", {
             title,
             categories
         });
 
-    } catch (error) {
+    } catch (err) {
 
-        console.error("Error loading categories:", error);
-
-        res.status(500).send("Server Error");
+        // Pass the error to Express error handler
+        next(err);
     }
 };
 
 
 // Display one category details page
-const showCategoryDetailsPage = async (req, res) => {
+const showCategoryDetailsPage = async (req, res, next) => {
 
     try {
 
-        // Get category ID from the URL
+        // Get the category ID from the URL
         const { id } = req.params;
 
-        // Get category information
+        // Check that the ID is a positive integer
+        if (!Number.isInteger(Number(id)) || Number(id) <= 0) {
+            const err = new Error("Invalid category ID");
+            err.status = 400;
+            return next(err);
+        }
+
+        // Get the category from the database
         const category = await getCategoryDetails(id);
+
+        // Check whether the category exists
+        if (!category) {
+            const err = new Error("Category not found");
+            err.status = 404;
+            return next(err);
+        }
 
         // Get all projects in this category
         const projects = await getProjectsByCategoryId(id);
 
+        // Set the page title
         const title = category.category_name;
 
-        // Render category details page
-        res.render('category-details', {
+        // Render the category details page
+        res.render("category-details", {
             title,
             category,
             projects
         });
 
-    } catch (error) {
+    } catch (err) {
 
-        console.error("Error loading category details:", error);
-
-        res.status(500).send("Server Error");
+        // Pass the error to Express error handler
+        next(err);
     }
 };
 
