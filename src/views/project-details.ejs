@@ -12,16 +12,49 @@
         </p>
 
         <p>
-            <strong>Organization:</strong>
+            <strong>Date:</strong><br>
+            <%= new Date(project.project_date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }) %>
+        </p>
+
+        <p>
+            <strong>Location:</strong><br>
+            <%= project.location %>
+        </p>
+
+        <p>
+            <strong>Organization:</strong><br>
             <%= project.organization_name %>
         </p>
 
         <p>
-            <strong>Contact Email:</strong>
-            <a href="mailto:<%= project.contact_email %>">
-                <%= project.contact_email %>
-            </a>
+            <strong>Categories:</strong>
         </p>
+
+        <% if (categories.length > 0) { %>
+
+            <ul>
+
+                <% categories.forEach(category => { %>
+
+                    <li>
+                        <a href="/categories/<%= category.category_id %>">
+                            <%= category.category_name %>
+                        </a>
+                    </li>
+
+                <% }) %>
+
+            </ul>
+
+        <% } else { %>
+
+            <p>No categories assigned.</p>
+
+        <% } %>
 
     </article>
 
