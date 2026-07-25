@@ -4,13 +4,37 @@ import {
     getCategoryDetails,
     getProjectsByCategoryId,
     updateCategoryAssignments,
-    getCategoriesByProjectId
+    getCategoriesByProjectId,
+    createCategory,
+    updateCategory
 } from '../models/categories.js';
 
 // Import project model functions
 import {
    getProjectDetails
 } from '../models/projects.js';
+
+import { body, validationResult } from 'express-validator';
+
+
+// Validation rules for category forms
+const categoryValidation = [
+
+   body('categoryName')
+
+      .trim()
+
+      .notEmpty()
+      .withMessage('Category name is required')
+
+      .isLength({ min: 3, max: 100 })
+      .withMessage(
+         'Category name must be between 3 and 100 characters'
+      )
+
+];
+
+
 
 
 // Display all categories
@@ -171,10 +195,169 @@ const processAssignCategoriesForm = async (req, res, next) => {
 };
 
 
+// Display the new category form
+const showNewCategoryForm = async (req, res, next) => {
+
+   try {
+
+      // Set the page title
+      const title = 'Add New Category';
+
+      // Render the new category page
+      res.render('new-category', {
+         title
+      });
+
+   } catch (err) {
+
+      // Pass the error to the global error handler
+      next(err);
+   }
+};
+
+
+// Process the new category form
+const processNewCategoryForm = async (req, res, next) => {
+
+   try {
+
+      // Get the validation results
+      const results = validationResult(req);
+
+      // Check whether validation failed
+      if (!results.isEmpty()) {
+
+         // Store each validation error
+         results.array().forEach((error) => {
+            req.flash('error', error.msg);
+         });
+
+         // Return the user to the form
+         return res.redirect('/new-category');
+      }
+
+      // Get the submitted category name
+      const { categoryName } = req.body;
+
+      // Create the category
+      const newCategoryId = await createCategory(categoryName);
+
+      // Store a success message
+      req.flash(
+         'success',
+         'New category created successfully!'
+      );
+
+      // Redirect to the new category page
+      res.redirect(`/categories/${newCategoryId}`);
+
+   } catch (err) {
+
+      // Pass the error to the global error handler
+      next(err);
+   }
+};
+
+
+
+// Display the edit category form
+const showEditCategoryForm = async (req, res, next) => {
+
+   try {
+
+      // Get the category ID
+      const categoryId = req.params.id;
+
+      // Check for a valid ID
+      if (!Number.isInteger(Number(categoryId)) || Number(categoryId) <= 0) {
+
+         const err = new Error('Invalid category ID');
+         err.status = 400;
+
+         return next(err);
+      }
+
+      // Get the category
+      const category = await getCategoryDetails(categoryId);
+
+      // Check whether it exists
+      if (!category) {
+
+         const err = new Error('Category not found');
+         err.status = 404;
+
+         return next(err);
+      }
+
+      // Page title
+      const title = 'Edit Category';
+
+      // Render the page
+      res.render('edit-category', {
+         title,
+         category
+      });
+
+   } catch (err) {
+
+      next(err);
+   }
+};
+
+
+// Process the edit category form
+const processEditCategoryForm = async (req, res, next) => {
+
+   try {
+
+      // Check validation
+      const results = validationResult(req);
+
+      if (!results.isEmpty()) {
+
+         results.array().forEach(error => {
+            req.flash('error', error.msg);
+         });
+
+         return res.redirect(`/edit-category/${req.params.id}`);
+      }
+
+      // Get values
+      const categoryId = req.params.id;
+      const { categoryName } = req.body;
+
+      // Update database
+      await updateCategory(
+         categoryId,
+         categoryName
+      );
+
+      // Success message
+      req.flash(
+         'success',
+         'Category updated successfully!'
+      );
+
+      // Redirect
+      res.redirect(`/categories/${categoryId}`);
+
+   } catch (err) {
+
+      next(err);
+   }
+};
+
+
+
 // Export controller functions
 export {
     showCategoriesPage,
     showCategoryDetailsPage,
     showAssignCategoriesForm,
-    processAssignCategoriesForm
+    processAssignCategoriesForm,
+    showNewCategoryForm,
+    processNewCategoryForm,
+    categoryValidation,
+    showEditCategoryForm,
+    processEditCategoryForm
 };

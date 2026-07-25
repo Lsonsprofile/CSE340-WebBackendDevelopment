@@ -156,11 +156,94 @@ const updateCategoryAssignments = async (
 };
 
 
+/**
+ * Creates a new category in the database.
+ * @param {string} categoryName - The category name.
+ * @returns {number} The ID of the newly created category.
+ */
+const createCategory = async (categoryName) => {
+
+   // SQL query to insert a new category
+   const query = `
+      INSERT INTO category (
+         category_name
+      )
+      VALUES ($1)
+      RETURNING category_id;
+   `;
+
+   // Execute the SQL query
+   const result = await db.query(query, [categoryName]);
+
+   // Check whether the category was created
+   if (result.rows.length === 0) {
+      throw new Error('Failed to create category');
+   }
+
+   // Log the new category when SQL logging is enabled
+   if (process.env.ENABLE_SQL_LOGGING === 'true') {
+      console.log(
+         'Created new category with ID:',
+         result.rows[0].category_id
+      );
+   }
+
+   // Return the new category ID
+   return result.rows[0].category_id;
+};
+
+
+/**
+ * Updates an existing category.
+ * @param {number} categoryId - The category ID.
+ * @param {string} categoryName - The updated category name.
+ * @returns {number} The updated category ID.
+ */
+const updateCategory = async (
+   categoryId,
+   categoryName
+) => {
+
+   // SQL query to update the category
+   const query = `
+      UPDATE category
+      SET
+         category_name = $1
+      WHERE category_id = $2
+      RETURNING category_id;
+   `;
+
+   // Execute the SQL query
+   const result = await db.query(
+      query,
+      [categoryName, categoryId]
+   );
+
+   // Check whether a category was updated
+   if (result.rows.length === 0) {
+      throw new Error('Failed to update category');
+   }
+
+   // Log the update when SQL logging is enabled
+   if (process.env.ENABLE_SQL_LOGGING === 'true') {
+      console.log(
+         'Updated category with ID:',
+         categoryId
+      );
+   }
+
+   // Return the updated category ID
+   return result.rows[0].category_id;
+};
+
+
 // Export model functions
 export {
     getAllCategories,
     getCategoriesByProjectId,
     getCategoryDetails,
     getProjectsByCategoryId,
-    updateCategoryAssignments
+    updateCategoryAssignments,
+    createCategory,
+    updateCategory
 };

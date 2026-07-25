@@ -9,6 +9,12 @@
         <strong><%= category.category_name %></strong> category.
     </p>
 
+    <p>
+        <a class="action-link"  href="/edit-category/<%= category.category_id %>">
+            Edit Category
+        </a>
+    </p>
+
     <% if (projects.length > 0) { %>
 
         <ul class="project-list">
