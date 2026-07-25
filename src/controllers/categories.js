@@ -2,8 +2,15 @@
 import {
     getAllCategories,
     getCategoryDetails,
-    getProjectsByCategoryId
+    getProjectsByCategoryId,
+    updateCategoryAssignments,
+    getCategoriesByProjectId
 } from '../models/categories.js';
+
+// Import project model functions
+import {
+   getProjectDetails
+} from '../models/projects.js';
 
 
 // Display all categories
@@ -77,8 +84,97 @@ const showCategoryDetailsPage = async (req, res, next) => {
 };
 
 
+
+// Display the assign categories form
+const showAssignCategoriesForm = async (req, res, next) => {
+
+   try {
+
+      // Get the project ID from the URL
+      const projectId = req.params.projectId;
+
+      // Get the project details
+      const project = await getProjectDetails(projectId);
+
+      // Check whether the project exists
+      if (!project) {
+
+         const err = new Error('Project not found');
+         err.status = 404;
+
+         return next(err);
+      }
+
+      // Get all available categories
+      const categories = await getAllCategories();
+
+      // Get the categories assigned to this project
+      const assignedCategories = await getCategoriesByProjectId(projectId);
+
+      // Set the page title
+      const title = 'Assign Categories to Project';
+
+      // Render the assign categories page
+      res.render('assign-categories', {
+         title,
+         project,
+         projectId,
+         categories,
+         assignedCategories
+      });
+
+   } catch (err) {
+
+      // Pass the error to the global error handler
+      next(err);
+   }
+};
+
+
+
+// Process the assign categories form
+const processAssignCategoriesForm = async (req, res, next) => {
+
+   try {
+
+      // Get the project ID from the URL
+      const projectId = req.params.projectId;
+
+      // Get the selected category IDs from the form
+      const selectedCategoryIds = req.body.categoryIds || [];
+
+      // Ensure the selected categories are always stored in an array
+      const categoryIds = Array.isArray(selectedCategoryIds)
+         ? selectedCategoryIds
+         : [selectedCategoryIds];
+
+      // Update the category assignments
+      await updateCategoryAssignments(
+         projectId,
+         categoryIds
+      );
+
+      // Store a success message
+      req.flash(
+         'success',
+         'Project categories updated successfully!'
+      );
+
+      // Redirect to the project details page
+      res.redirect(`/project/${projectId}`);
+
+   } catch (err) {
+
+      // Pass the error to the global error handler
+      next(err);
+   }
+};
+
+
 // Export controller functions
 export {
     showCategoriesPage,
-    showCategoryDetailsPage
+    showCategoryDetailsPage,
+    showAssignCategoriesForm,
+    processAssignCategoriesForm
 };

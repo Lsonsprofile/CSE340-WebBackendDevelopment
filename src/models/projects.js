@@ -108,10 +108,133 @@ const getCategoriesByProjectId = async (projectId) => {
   return result.rows;
 };
 
+
+/**
+ * Creates a new service project in the database.
+ * @param {string} title - The project title.
+ * @param {string} description - The project description.
+ * @param {string} location - The project location.
+ * @param {string} projectDate - The project date.
+ * @param {number} organizationId - The organization ID.
+ * @returns {number} The ID of the newly created project.
+ */
+const createProject = async (
+   title,
+   description,
+   location,
+   projectDate,
+   organizationId
+) => {
+
+   // SQL query to insert a new project
+   const query = `
+      INSERT INTO project (
+         title,
+         description,
+         location,
+         project_date,
+         organization_id
+      )
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING project_id;
+   `;
+
+   // Values that replace the SQL placeholders
+   const queryParams = [
+      title,
+      description,
+      location,
+      projectDate,
+      organizationId
+   ];
+
+   // Execute the SQL query
+   const result = await db.query(query, queryParams);
+
+   // Check whether the project was created
+   if (result.rows.length === 0) {
+      throw new Error('Failed to create project');
+   }
+
+   // Log the new project when SQL logging is enabled
+   if (process.env.ENABLE_SQL_LOGGING === 'true') {
+      console.log('Created new project with ID:', result.rows[0].project_id);
+   }
+
+   // Return the new project ID
+   return result.rows[0].project_id;
+};
+
+
+
+
+/**
+ * Updates an existing service project.
+ * @param {number} projectId - The project ID.
+ * @param {string} title - The updated project title.
+ * @param {string} description - The updated project description.
+ * @param {string} location - The updated project location.
+ * @param {string} projectDate - The updated project date.
+ * @param {number} organizationId - The updated organization ID.
+ * @returns {number} The updated project ID.
+ */
+const updateProject = async (
+   projectId,
+   title,
+   description,
+   location,
+   projectDate,
+   organizationId
+) => {
+
+   // SQL query to update the project
+   const query = `
+      UPDATE project
+      SET
+         title = $1,
+         description = $2,
+         location = $3,
+         project_date = $4,
+         organization_id = $5
+      WHERE project_id = $6
+      RETURNING project_id;
+   `;
+
+   // Values that replace the SQL placeholders
+   const queryParams = [
+      title,
+      description,
+      location,
+      projectDate,
+      organizationId,
+      projectId
+   ];
+
+   // Execute the SQL query
+   const result = await db.query(query, queryParams);
+
+   // Check whether the project was updated
+   if (result.rows.length === 0) {
+      throw new Error('Failed to update project');
+   }
+
+   // Log the update when SQL logging is enabled
+   if (process.env.ENABLE_SQL_LOGGING === 'true') {
+      console.log('Updated project with ID:', projectId);
+   }
+
+   // Return the updated project ID
+   return result.rows[0].project_id;
+};
+
+
+
 export {
-  getAllProjects,
-  getProjectsByOrganization,
-  getUpcomingProjects,
-  getProjectDetails,
-  getCategoriesByProjectId
+   getAllProjects,
+   getProjectsByOrganization,
+   getUpcomingProjects,
+   getProjectDetails,
+   getCategoriesByProjectId,
+   createProject,
+   updateProject
 };

@@ -4,6 +4,13 @@
 
     <h1><%= project.title %></h1>
 
+    <!-- Link to edit this project's categories -->
+    <p >
+        <a class="action-link" href="/assign-categories/<%= project.project_id %>">
+            Edit Categories
+        </a>
+    </p>
+
     <article class="project-details">
 
         <p>
@@ -55,6 +62,12 @@
             <p>No categories assigned.</p>
 
         <% } %>
+
+        <p>
+            <a class="action-link" href="/edit-project/<%= project.project_id %>">
+                Edit Project
+            </a>
+        </p>
 
     </article>
 

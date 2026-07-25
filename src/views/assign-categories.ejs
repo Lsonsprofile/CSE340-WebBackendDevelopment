@@ -1,0 +1,59 @@
+<%- include('partials/header') %>
+
+<main>
+
+   <!-- Page heading -->
+   <h1><%= title %></h1>
+
+   <!-- Display the project title -->
+   <h2><%= project.title %></h2>
+
+   <!-- Form to update the project's categories -->
+   <form
+      action="/assign-categories/<%= projectId %>"
+      method="POST"
+   >
+
+      <!-- Display all available categories -->
+      <div class="form-group">
+
+         <% categories.forEach(category => { %>
+
+            <div>
+
+               <!-- Category checkbox -->
+               <input
+                  type="checkbox"
+                  id="category-<%= category.category_id %>"
+                  name="categoryIds"
+                  value="<%= category.category_id %>"
+                  <%= assignedCategories.some(
+                        assigned =>
+                           assigned.category_id === category.category_id
+                     )
+                        ? 'checked'
+                        : ''
+                  %>
+               >
+
+               <!-- Category label -->
+               <label for="category-<%= category.category_id %>">
+                  <%= category.category_name %>
+               </label>
+
+            </div>
+
+         <% }) %>
+
+      </div>
+
+      <!-- Submit button -->
+      <button type="submit">
+         Update Categories
+      </button>
+
+   </form>
+
+</main>
+
+<%- include('partials/footer') %>

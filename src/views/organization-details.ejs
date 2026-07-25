@@ -10,6 +10,12 @@
         alt="<%= organization.name %> logo"
     >
 
+    <p class="action-link">
+        <a href="/edit-organization/<%= organization.organization_id %>">
+            Edit Organization
+        </a>
+    </p>
+
     <h3>Service Projects</h3>
 
     <% if (projects.length > 0) { %>
