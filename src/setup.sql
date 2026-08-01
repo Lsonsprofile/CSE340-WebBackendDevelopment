@@ -1,15 +1,26 @@
---
--- Create roles table
---
+-- Roles table defines available roles
 CREATE TABLE roles (
     role_id SERIAL PRIMARY KEY,
     role_name VARCHAR(50) UNIQUE NOT NULL,
     role_description TEXT
 );
 
---
+-- Users table references roles
+CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role_id INTEGER REFERENCES roles(role_id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Seed with basic roles
+INSERT INTO roles (role_name, role_description) VALUES 
+    ('user', 'Standard user with basic access'),
+    ('admin', 'Administrator with full system access');
+
 -- Create organization table
---
 CREATE TABLE organization (
     organization_id SERIAL PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
@@ -18,9 +29,7 @@ CREATE TABLE organization (
     logo_filename VARCHAR(255) NOT NULL
 );
 
---
 -- Create project table
---
 CREATE TABLE project (
     project_id SERIAL PRIMARY KEY,
     organization_id INT NOT NULL,
@@ -34,17 +43,13 @@ CREATE TABLE project (
         ON DELETE CASCADE
 );
 
---
 -- Create category table
---
 CREATE TABLE category (
     category_id SERIAL PRIMARY KEY,
     category_name VARCHAR(100) NOT NULL UNIQUE
 );
 
---
 -- Create project_category junction table
---
 CREATE TABLE project_category (
     project_id INT NOT NULL,
     category_id INT NOT NULL,
@@ -59,9 +64,7 @@ CREATE TABLE project_category (
         ON DELETE CASCADE
 );
 
---
 -- Insert organizations (with explicit IDs)
---
 INSERT INTO organization (organization_id, name, description, contact_email, logo_filename)
 VALUES
 (1, 'BrightFuture Builders',
@@ -89,9 +92,7 @@ VALUES
  'grader@example.edu',
  'placeholder-logo.png');
 
---
 -- Insert projects (with explicit IDs)
---
 INSERT INTO project (project_id, organization_id, title, description, location, project_date)
 VALUES
 (1, 1, 'Downtown Housing Renovation',
@@ -179,9 +180,7 @@ VALUES
  'online',
  '2026-08-27');
 
---
 -- Insert categories (with explicit IDs)
---
 INSERT INTO category (category_id, category_name)
 VALUES
 (1, 'Construction & Repair'),
@@ -192,9 +191,7 @@ VALUES
 (6, 'school research project'),
 (7, 'Grading');
 
---
 -- Associate projects with categories (all many-to-many links)
---
 INSERT INTO project_category (project_id, category_id)
 VALUES
 (1, 1),

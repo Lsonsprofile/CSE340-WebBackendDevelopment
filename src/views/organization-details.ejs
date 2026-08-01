@@ -10,11 +10,15 @@
         alt="<%= organization.name %> logo"
     >
 
+    <% if (user && user.role_name==='admin' ) { %>
+    
     <p>
-        <a class="action-link"  href="/edit-organization/<%= organization.organization_id %>">
+        <a class="action-link" href="/edit-organization/<%= organization.organization_id %>">
             Edit Organization
         </a>
     </p>
+
+    <% } %>
 
     <h3>Service Projects</h3>
 

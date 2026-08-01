@@ -9,11 +9,17 @@
         <strong><%= category.category_name %></strong> category.
     </p>
 
+    <!-- Link to edit the category (only visible to admin users) -->
+    <% if (user && user.role_name==='admin' ) { %>
+    
     <p>
-        <a class="action-link"  href="/edit-category/<%= category.category_id %>">
+        <a class="action-link" href="/edit-category/<%= category.category_id %>">
             Edit Category
         </a>
     </p>
+
+    <% } %>
+
 
     <% if (projects.length > 0) { %>
 

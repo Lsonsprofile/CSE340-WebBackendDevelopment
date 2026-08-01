@@ -48,7 +48,7 @@ app.set('view engine', 'ejs');
 // Set the folder where EJS templates are stored
 app.set('views', path.join(__dirname, 'src/views'));
 
-// Middleware: log every request (only in development mode)
+// Middleware: create and manage user sessions
 app.use(session({
    secret: SESSION_SECRET,
    resave: false,
@@ -69,10 +69,31 @@ app.use((req, res, next) => {
     next();
 });
 
-// Middleware: make NODE_ENV available to all EJS templates
+// Middleware: make login status and NODE_ENV available to all EJS templates
 app.use((req, res, next) => {
+
+    // Assume the user is not logged in
+    res.locals.isLoggedIn = false;
+
+    // No user by default
+    res.locals.user = null;
+
+    // Check if a user exists in the session
+    if (req.session && req.session.user) {
+
+        // User is logged in
+        res.locals.isLoggedIn = true;
+
+        // Make the user available to all EJS views
+        res.locals.user = req.session.user;
+
+    }
+
+    // Make NODE_ENV available to EJS templates
     res.locals.NODE_ENV = NODE_ENV;
+
     next();
+
 });
 
 // Mount the router so all routes defined in routes.js are active

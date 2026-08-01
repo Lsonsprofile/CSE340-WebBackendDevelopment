@@ -6,12 +6,20 @@
 
     <p>Browse the service project categories available in our community.</p>
 
+
+    <!-- Link to add a new category (only visible to admin users) -->
+    <% if (user && user.role_name==='admin' ) { %>
+    
+    <!-- Link to add a new category -->
     <p>
-        <a class="action-link"  href="/new-category">
+        <a class="action-link" href="/new-category">
             Add a New Category
         </a>
     </p>
 
+    <% } %>
+
+    <!-- Display the list of categories -->
     <% if (categories.length > 0) { %>
 
         <ul class="category-list">

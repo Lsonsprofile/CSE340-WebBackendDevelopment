@@ -3,9 +3,15 @@
 <main>
     <h1><%= title %></h1>
 
+    <% if (user && user.role_name==='admin' ) { %>
+    
     <p>
-        <a href="/new-project"  class="action-link">Add New Service Project</a>
+        <a href="/new-project" class="action-link">
+            Add New Service Project
+        </a>
     </p>
+
+    <% } %>
 
     <ul class="project-list">
         <% projects.forEach(project => { %>
