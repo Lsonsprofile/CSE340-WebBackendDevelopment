@@ -484,6 +484,63 @@ form button:active {
     text-decoration: none;
 }
 
+
+/* ---------- USERS PAGE ---------- */
+
+.users-page h1 {
+    color: var(--title-color);
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.users-page p {
+    color: var(--meta-color);
+}
+
+.users-page table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-light);
+    margin: 1.5rem 0;
+}
+
+.users-page th,
+.users-page td {
+    padding: 0.75rem 1.25rem;
+    text-align: left;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.users-page th {
+    background: linear-gradient(135deg, var(--category-bg-start), var(--category-bg-end));
+    color: var(--category-text);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.users-page tr:last-child td {
+    border-bottom: none;
+}
+
+.users-page tr:hover td {
+    background: var(--card-hover-bg);
+}
+
+.users-page a {
+    color: var(--nav-hover);
+    text-decoration: none;
+    font-weight: bold;
+    transition: color .3s ease;
+}
+
+.users-page a:hover {
+    color: var(--nav-active);
+}
+
+
 /* ---------- FOOTER ---------- */
 footer {
     text-align: center;
